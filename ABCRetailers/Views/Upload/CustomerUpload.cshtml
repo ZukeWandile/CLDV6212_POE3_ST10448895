@@ -1,0 +1,88 @@
+﻿@model ABCRetailers.Models.FileUploadModel
+@{
+    ViewData["Title"] = "Upload Proof of Payment";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%);
+        color: #e6edf3;
+    }
+
+    .card {
+        background: rgba(22, 27, 34, 0.8);
+        border: 1px solid rgba(88, 166, 255, 0.2);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-upload me-2"></i> Upload Proof of Payment
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Index" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- File Input -->
+                        <div class="mb-3">
+                            <label asp-for="ProofOfPayment" class="form-label">Choose File</label>
+                            <input asp-for="ProofOfPayment"
+                                   type="file"
+                                   class="form-control"
+                                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                   required />
+                            <span asp-validation-for="ProofOfPayment" class="text-danger"></span>
+                            <div class="form-text">
+                                Accepted: PDF, JPG, PNG, DOC, DOCX • Max size: 50 MB
+                            </div>
+                        </div>
+
+                        <!-- Order ID -->
+                        <div class="mb-3">
+                            <label asp-for="OrderId" class="form-label">Order ID (Optional)</label>
+                            <input asp-for="OrderId" class="form-control" placeholder="Enter related order ID" />
+                        </div>
+
+                        <!-- Customer Name - Hidden (auto-filled) -->
+                        <input type="hidden" asp-for="CustomerName" value="@User.Identity.Name" />
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-upload"></i> Upload File
+                            </button>
+                            <button type="reset" class="btn btn-outline-secondary">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="mt-4">
+                <div class="alert alert-info">
+                    <h6 class="mb-2"><i class="fas fa-info-circle"></i> Upload Tips</h6>
+                    <ul class="mb-0">
+                        <li>Select your proof of payment document</li>
+                        <li>Optionally include Order ID for quicker verification</li>
+                        <li>Files are stored securely in Azure Blob Storage</li>
+                        <li>A success message will confirm a completed upload</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

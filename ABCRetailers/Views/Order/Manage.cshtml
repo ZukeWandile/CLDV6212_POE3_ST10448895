@@ -1,0 +1,39 @@
+﻿@model List<ABCRetailers.Models.Order>
+
+<h2>Manage Orders</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Update</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Username</td>
+                <td>@order.ProductId</td>
+                <td>@order.Quantity</td>
+                <td>
+                    <form asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="id" value="@order.Id" />
+                        <select name="status" class="form-select">
+                            @foreach (var status in Enum.GetValues(typeof(OrderStatus)))
+                            {
+                                <option value="@status" selected="@(status.Equals(order.Status))">@status</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary mt-1">Update</button>
+                    </form>
+                </td>
+                <td>@order.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

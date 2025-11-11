@@ -1,0 +1,243 @@
+﻿@model ABCRetailers.Models.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    :root {
+        --primary-blue: #1e40af;
+        --dark-blue: #1e3a8a;
+        --light-blue: #3b82f6;
+        --accent-blue: #60a5fa;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        min-height: 100vh;
+    }
+
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+        padding: 4rem 2rem;
+        border-radius: 1rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 20px 60px rgba(30, 64, 175, 0.3);
+    }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+    .action-card {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-radius: 1rem;
+        padding: 2rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        backdrop-filter: blur(10px);
+    }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--light-blue);
+            background: rgba(30, 64, 175, 0.3);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .action-card i {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+        }
+
+        .action-card span {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .action-card small {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+
+    .section-title {
+        color: white;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--light-blue);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+        }
+
+        .product-card img {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .product-card .card-body {
+            padding: 1.25rem;
+        }
+
+        .product-card .card-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-card .card-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+    .product-price {
+        color: var(--accent-blue);
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .stock-badge {
+        background: rgba(59, 130, 246, 0.2);
+        color: var(--accent-blue);
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+
+    .empty-state {
+        background: rgba(30, 64, 175, 0.2);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 0.75rem;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+</style>
+
+<div class="hero-section text-center">
+    <h1>ABC Retailers</h1>
+</div>
+
+<!-- Quick Actions -->
+<!-- Quick Actions - Only show if authenticated -->
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="row g-4 mb-5">
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="col-md-3 col-sm-6">
+                <a asp-controller="Customer" asp-action="Index" class="action-card">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                    <small>@Model?.CustomerCount total</small>
+                </a>
+            </div>
+        }
+
+        <div class="col-md-3 col-sm-6">
+            <a asp-controller="Product" asp-action="Index" class="action-card">
+                <i class="fas fa-box"></i>
+                <span>Products</span>
+                <small>@Model?.ProductCount total</small>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <a asp-controller="Order" asp-action="Index" class="action-card">
+                <i class="fas fa-shopping-cart"></i>
+                <span>@(User.IsInRole("Admin") ? "Orders" : "My Orders")</span>
+                <small>@Model?.OrderCount total</small>
+            </a>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="col-md-3 col-sm-6">
+                <a asp-controller="Upload" asp-action="Index" class="action-card">
+                    <i class="fas fa-upload"></i>
+                    <span>Uploads</span>
+                    <small>Payment proofs</small>
+                </a>
+            </div>
+        }
+    </div>
+}
+
+<!-- Featured Products -->
+<div class="row">
+    <div class="col-12">
+        <h2 class="section-title">
+            <i class="fas fa-star"></i> Featured Products
+        </h2>
+
+        @if (Model?.FeaturedProducts?.Any() == true)
+        {
+            <div class="row g-4">
+                @foreach (var product in Model.FeaturedProducts.Take(8))
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="product-card">
+                            @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl" alt="@product.ProductName">
+                            }
+                            else
+                            {
+                                <div style="height: 200px; background: rgba(30, 64, 175, 0.2); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-image fa-3x" style="color: rgba(255, 255, 255, 0.3);"></i>
+                                </div>
+                            }
+
+                            <div class="card-body">
+                                <h6 class="card-title">@product.ProductName</h6>
+                                <p class="card-text">
+                                   
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="product-price">@product.Price.ToString("C")</span>
+                                    <span class="stock-badge">@product.StockAvailable in stock</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state text-center">
+                <i class="fas fa-box-open fa-3x mb-3" style="color: var(--accent-blue);"></i>
+                <p class="mb-0">No products available yet. <a asp-controller="Product" asp-action="Create" style="color: var(--accent-blue);">Add your first product</a></p>
+            </div>
+        }
+    </div>
+</div>

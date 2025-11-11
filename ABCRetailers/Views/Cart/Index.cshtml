@@ -1,0 +1,75 @@
+﻿@model ABCRetailers.Models.ViewModels.CartPageViewModel
+
+@{
+    ViewData["Title"] = "My Cart";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+@if (!Model.Items.Any())
+{
+    <div class="alert alert-info">Your cart is empty.</div>
+}
+else
+{
+    @* =============================
+       STEP 1️⃣: Update Quantities Form
+       ============================= *@
+    <form asp-action="UpdateQuantities" method="post">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product</th>
+                    <th style="width:120px;">Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    var item = Model.Items[i];
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>
+                            <input type="hidden" name="items[@i].ProductId" value="@item.ProductId" />
+                            <input type="number" name="items[@i].Quantity" value="@item.Quantity" min="1" class="form-control" />
+                        </td>
+                        <td>@item.UnitPrice.ToString("C")</td>
+                        <td>@item.Subtotal.ToString("C")</td>
+                        <td>
+                            @* Each Remove button uses a small POST form *@
+                            <form asp-action="Remove" asp-route-productId="@item.ProductId" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i> Remove
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="fw-bold">
+                <tr>
+                    <td colspan="3" class="text-end">Total</td>
+                    <td colspan="2">@Model.Total.ToString("C")</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sync-alt"></i> Update Cart
+            </button>
+
+            @* =============================
+               STEP 2️⃣: Checkout Button (POST form)
+               ============================= *@
+            <form asp-action="Checkout" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-credit-card"></i> Checkout
+                </button>
+            </form>
+        </div>
+    </form>
+}

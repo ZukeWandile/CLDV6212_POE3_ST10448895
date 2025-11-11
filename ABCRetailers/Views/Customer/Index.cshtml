@@ -1,0 +1,446 @@
+﻿@model IEnumerable<ABCRetailers.Models.Customer>
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<style>
+    /* === Modern Blue/Black Theme with Enhanced Animations === */
+    body {
+        background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 100%);
+        color: #e6edf3;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        min-height: 100vh;
+    }
+
+    h2 {
+        color: #58a6ff;
+        font-weight: 600;
+        text-shadow: 0 0 20px rgba(88, 166, 255, 0.3);
+    }
+
+    /* Animated gradient background */
+    .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Card with glass morphism effect */
+    .card {
+        background: rgba(22, 27, 34, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(88, 166, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+    }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px rgba(13, 110, 253, 0.3);
+            border-color: rgba(88, 166, 255, 0.5);
+        }
+
+    /* Table styling */
+    .table {
+        color: #e6edf3;
+        margin: 0;
+    }
+
+        .table thead {
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+            .table thead th {
+                border: none;
+                padding: 1rem;
+                font-weight: 600;
+            }
+
+        .table tbody tr {
+            border-bottom: 1px solid rgba(88, 166, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+    .table-hover tbody tr:hover {
+        background: linear-gradient(90deg, rgba(13, 110, 253, 0.15), rgba(13, 202, 240, 0.15));
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+    }
+
+    .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    /* Customer ID code styling */
+    code {
+        background: rgba(13, 110, 253, 0.2);
+        color: #58a6ff;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(88, 166, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+
+        code:hover {
+            background: rgba(13, 110, 253, 0.3);
+            border-color: #58a6ff;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+        }
+
+    /* Button styling */
+    .btn-primary {
+        background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+        border: none;
+        border-radius: 10px;
+        padding: 0.7rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+    }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(13, 202, 240, 0.6);
+        }
+
+    /* Action buttons */
+    .btn-outline-primary, .btn-outline-danger {
+        border-radius: 8px;
+        border-width: 2px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-outline-primary {
+        border-color: #0d6efd;
+        color: #58a6ff;
+    }
+
+        .btn-outline-primary::before,
+        .btn-outline-danger::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-outline-primary::before {
+            background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+        }
+
+    .btn-outline-danger::before {
+        background: linear-gradient(90deg, #dc3545, #ff4757);
+    }
+
+    .btn-outline-primary:hover::before,
+    .btn-outline-danger:hover::before {
+        left: 0;
+    }
+
+    .btn-outline-primary:hover {
+        color: white;
+        border-color: #0dcaf0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+    }
+
+    .btn-outline-danger:hover {
+        color: white;
+        border-color: #ff4757;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+
+    /* Alert styling */
+    .alert-info {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(13, 202, 240, 0.1));
+        border: 1px solid rgba(88, 166, 255, 0.3);
+        border-left: 4px solid #0d6efd;
+        border-radius: 12px;
+        color: #c9d1d9;
+        backdrop-filter: blur(10px);
+        animation: slideIn 0.5s ease;
+    }
+
+    @@keyframes slideIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Modal styling */
+    .modal-content {
+        background: linear-gradient(135deg, #161b22 0%, #1a1f2e 100%);
+        color: #e6edf3;
+        border: 1px solid rgba(88, 166, 255, 0.3);
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-header, .modal-footer {
+        border-color: rgba(88, 166, 255, 0.2);
+    }
+
+    .modal-title {
+        text-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+    }
+
+    .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+        .btn-close:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+
+    /* Header animation */
+    .page-header {
+        animation: fadeInDown 0.6s ease;
+    }
+
+    @@keyframes fadeInDown {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Table row stagger animation */
+    .table tbody tr {
+        animation: fadeInUp 0.5s ease backwards;
+    }
+
+        .table tbody tr:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .table tbody tr:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .table tbody tr:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .table tbody tr:nth-child(4) {
+            animation-delay: 0.25s;
+        }
+
+        .table tbody tr:nth-child(5) {
+            animation-delay: 0.3s;
+        }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Icon animations */
+    .fas {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover .fas {
+        transform: scale(1.2);
+    }
+
+    .fa-trash:hover {
+        animation: shake 0.5s ease;
+    }
+
+    @@keyframes shake {
+        0%, 100%
+
+    {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+
+    }
+</style>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header">
+        <h2><i class="fas fa-users me-2"></i> Customers</h2>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="fas fa-plus me-1"></i> Add New Customer
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Shipping Address</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var customer in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <code>
+                                        @(string.IsNullOrEmpty(customer?.Id) ? "-" : customer.Id.Substring(0, Math.Min(8, customer.Id.Length)) + "…")
+                                    </code>
+                                </td>
+                                <td>@customer.Name</td>
+                                <td>@customer.Surname</td>
+                                <td>@customer.Username</td>
+                                <td>@customer.Email</td>
+                                <td>@customer.ShippingAddress</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@customer.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="confirmDelete('@customer.Id', '@(customer.Name + " " + customer.Surname)')"
+                                                title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle me-2"></i> No customers found.
+            <a asp-action="Create" class="alert-link text-decoration-underline text-primary">Add your first customer</a>!
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i> Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete customer <strong id="customerName"></strong>?
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(customerId, customerName) {
+            document.getElementById('customerName').textContent = customerName;
+            document.getElementById('deleteForm').action = '@Url.Action("Delete", "Customer")/' + encodeURIComponent(customerId);
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    </script>
+}
